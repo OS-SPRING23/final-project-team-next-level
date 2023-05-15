@@ -18,12 +18,97 @@
 int ticket = 30, _flavors[3] = {29, 34, 18}, _toppings[2] = {20, 34};
 double revenue = 0.0;
 
-
-// function prototypes
+// function prototypes declaration at end
 void *iceCream(void *_id);
 
 // semaphores declaration
 sem_t ticketC, flavorC, f1, f2, f3, toppingC, t1, t2, paymentC;
+
+
+// SHAHEER ADD YOUR MAIN CODE HERE.
+// MAIN FUNCTION ALSO ADDED
+// CODE FINALIZED AHMED
+
+int main()
+{
+	// semaphore initialization - START
+	sem_init(&ticketC, 0, 1);
+	
+	sem_init(&flavorC, 0, 3);
+	sem_init(&f1, 0, 1);
+	sem_init(&f2, 0, 1);
+	sem_init(&f3, 0, 1);
+	
+	sem_init(&toppingC, 0, 2);
+	sem_init(&t1, 0, 1);
+	sem_init(&t2, 0, 1);
+	
+	sem_init(&paymentC, 0, 1);
+	
+	// semaphore initialization - END
+
+	int noC;
+
+	printf("\n\nEnter Number Of Customers [1-%d]: ", ticket);
+	scanf("%d", &noC);
+	printf("\n\n");
+	
+	if(noC > ticket || noC <= 0)
+	{
+		printf("\n\nInvalid Input!\n\n");
+		return 0;
+	}
+	
+	int _id[noC];
+	
+	for(int i=0; i<noC; i++)
+	{
+		_id[i] = i+100;
+	}
+	
+	
+	
+	
+	// multithreading region - START
+	pthread_t _customer[noC];
+	
+	for(int i=0; i<noC; i++)
+	{
+		pthread_create(&_customer[i], 0, &iceCream, (void*) &_id[i]);
+	}
+	
+	for(int i=0; i<noC; i++)
+	{
+		pthread_join(_customer[i], NULL);
+	}
+	// multithreading region - END
+	
+	
+	printf("\n\nBusiness Journal - At Closing\n\n");
+	printf("Number Of Customers: %d", noC);
+	printf("\nRevenue Generated: $ %f", revenue);
+	printf("\nTickets Remaining: %d\n\n", ticket);
+	
+	
+	// semaphore destroying - START
+	
+	sem_destroy(&ticketC);
+	
+	sem_destroy(&flavorC);
+	sem_destroy(&f1);
+	sem_destroy(&f2);
+	sem_destroy(&f3);
+	
+	sem_destroy(&toppingC);
+	sem_destroy(&t1);
+	sem_destroy(&t2);
+	
+	sem_destroy(&paymentC);
+	
+	// semaphore destroying - END
+	
+	return 0;
+}
 void *iceCream(void *_id)
 {
 	int _ID = *(int*)_id, checkRaceCond_1 = 0;
@@ -186,4 +271,3 @@ void *iceCream(void *_id)
 	return NULL;
 }
 
-// SHAHEER ADD YOUR MAIN CODE HERE.
